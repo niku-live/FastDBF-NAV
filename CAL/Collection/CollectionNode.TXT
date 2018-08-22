@@ -1,0 +1,70 @@
+OBJECT Codeunit 50200 Lib_CollectionNode
+{
+  OBJECT-PROPERTIES
+  {
+    Date=;
+    Time=;
+    Version List=;
+  }
+  PROPERTIES
+  {
+    OnRun=BEGIN
+          END;
+
+  }
+  CODE
+  {
+    VAR
+      NodeValue@1000 : Variant;
+      NextNode@1001 : Codeunit 50200;
+      PrevNode@1002 : Codeunit 50200;
+      HasValue@1003 : Boolean;
+
+    [Internal]
+    PROCEDURE Value@1(VAR CurrentValue@1000 : Variant);
+    BEGIN
+      CurrentValue := NodeValue;
+    END;
+
+    [Internal]
+    PROCEDURE SetValue@2(VAR NewValue@1000 : Variant);
+    BEGIN
+      HasValue := TRUE;
+      NodeValue := NewValue;
+    END;
+
+    [Internal]
+    PROCEDURE Next@3(VAR CurrentNextNode@1000 : Codeunit 50200);
+    BEGIN
+      CurrentNextNode := NextNode;
+    END;
+
+    [Internal]
+    PROCEDURE SetNext@4(VAR NewNextNode@1000 : Codeunit 50200);
+    BEGIN
+      NextNode := NewNextNode;
+    END;
+
+    [Internal]
+    PROCEDURE Previous@5(VAR CurrentPrevNode@1000 : Codeunit 50200);
+    BEGIN
+      CurrentPrevNode := PrevNode;
+    END;
+
+    [Internal]
+    PROCEDURE SetPrevious@6(VAR NewPrevNode@1000 : Codeunit 50200);
+    BEGIN
+      PrevNode := NewPrevNode;
+    END;
+
+    [Internal]
+    PROCEDURE IsNull@7() : Boolean;
+    BEGIN
+      EXIT(NOT HasValue);
+    END;
+
+    BEGIN
+    END.
+  }
+}
+

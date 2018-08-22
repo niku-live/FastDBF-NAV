@@ -1,0 +1,162 @@
+OBJECT Codeunit 50115 Lib_DbfColumnType
+{
+  OBJECT-PROPERTIES
+  {
+    Date=;
+    Time=;
+    Version List=;
+  }
+  PROPERTIES
+  {
+    OnRun=BEGIN
+          END;
+
+  }
+  CODE
+  {
+    VAR
+      NumberValue@1000 : Integer;
+
+    [External]
+    PROCEDURE Character@1() : Integer;
+    BEGIN
+      /// <summary>
+      /// C Character   All OEM code page characters - padded with blanks to the width of the field.
+      /// Character  less than 254 length
+      /// ASCII text less than 254 characters long in dBASE.
+      ///
+      /// Character fields can be up to 32 KB long (in Clipper and FoxPro) using decimal
+      /// count as high byte in field length. It's possible to use up to 64KB long fields
+      /// by reading length as unsigned.
+      ///
+      /// </summary>
+      EXIT(0);
+    END;
+
+    [External]
+    PROCEDURE Number@2() : Integer;
+    BEGIN
+      /// <summary>
+      /// Number Length: less than 18
+      ///   ASCII text up till 18 characters long (include sign and decimal point).
+      ///
+      /// Valid characters:
+      ///    "0" - "9" and "-". Number fields can be up to 20 characters long in FoxPro and Clipper.
+      /// </summary>
+      /// <remarks>
+      /// We are not enforcing this 18 char limit.
+      /// </remarks>
+      EXIT(1);
+    END;
+
+    [External]
+    PROCEDURE Boolean@3() : Integer;
+    BEGIN
+      /// <summary>
+      ///  L  Logical  Length: 1    Boolean/byte (8 bit)
+      ///
+      ///  Legal values:
+      ///   ? Not initialised (default)
+      ///   Y,y Yes
+      ///   N,n No
+      ///   F,f False
+      ///   T,t True
+      ///   Logical fields are always displayed using T/F/?. Some sources claims
+      ///   that space (ASCII 20h) is valid for not initialised. Space may occur, but is not defined.
+      /// </summary>
+      EXIT(2);
+    END;
+
+    [External]
+    PROCEDURE Date@4() : Integer;
+    BEGIN
+      /// <summary>
+      /// D Date Length: 8  Date in format YYYYMMDD. A date like 0000-00- 00 is *NOT* valid.
+      /// </summary>
+      EXIT(3);
+    END;
+
+    [External]
+    PROCEDURE Memo@5() : Integer;
+    BEGIN
+      /// <summary>
+      /// M Memo Length: 10 Pointer to ASCII text field in memo file 10 digits representing a pointer to a DBT block (default is blanks).
+      /// </summary>
+      EXIT(4);
+    END;
+
+    [External]
+    PROCEDURE Binary@6() : Integer;
+    BEGIN
+      /// <summary>
+      /// B Binary  (dBASE V) Like Memo fields, but not for text processing.
+      /// </summary>
+      EXIT(5);
+    END;
+
+    [External]
+    PROCEDURE Integer@7() : Integer;
+    BEGIN
+      /// <summary>
+      /// I Integer Length: 4 byte little endian integer (FoxPro)
+      /// </summary>
+      EXIT(6);
+    END;
+
+    [External]
+    PROCEDURE Float@8() : Integer;
+    BEGIN
+      /// <summary>
+      /// FFloatNumber stored as a string, right justified, and padded with blanks to the width of the field.
+      /// example:
+      /// value = " 2.40000000000e+001" Length=19  Decimal_Count=11
+      ///
+      /// This type was added in DBF V4.
+      /// </summary>
+      EXIT(7);
+    END;
+
+    [External]
+    PROCEDURE Double@9() : Integer;
+    BEGIN
+      /// <summary>
+      /// O       Double         8 bytes - no conversions, stored as a double.
+      /// </summary>
+      EXIT(8);
+    END;
+
+    [External]
+    PROCEDURE SetValue@10(Value@1000 : Integer);
+    BEGIN
+      NumberValue := Value;
+    END;
+
+    [External]
+    PROCEDURE GetValue@11() : Integer;
+    BEGIN
+      EXIT(NumberValue);
+    END;
+
+    BEGIN
+    {
+      {
+        (FoxPro/FoxBase) Double integer *NOT* a memo field
+        G General (dBASE V: like Memo) OLE Objects in MS Windows versions
+        P Picture (FoxPro) Like Memo fields, but not for text processing.
+        Y Currency (FoxPro)
+        T DateTime (FoxPro)
+        I Integer Length: 4 byte little endian integer (FoxPro)
+      }
+
+      /// <summary>
+      ///  Great information on DBF located here:
+      ///  http://www.clicketyclick.dk/databases/xbase/format/data_types.html
+      ///  http://www.clicketyclick.dk/databases/xbase/format/dbf.html
+      ///
+      /// also take a look at this: http://www.dbase.com/Knowledgebase/INT/db7_file_fmt.htm
+      /// </summary>
+    }
+    END.
+  }
+}
+

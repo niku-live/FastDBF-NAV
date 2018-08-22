@@ -1,0 +1,154 @@
+OBJECT Codeunit 3007 DotNet_String
+{
+  OBJECT-PROPERTIES
+  {
+    Date=;
+    Time=;
+    Version List=;
+  }
+  PROPERTIES
+  {
+    OnRun=BEGIN
+          END;
+
+  }
+  CODE
+  {
+    VAR
+      DotNetString@1000 : DotNet "'mscorlib'.System.String";
+
+    [External]
+    PROCEDURE FromCharArray@100(CharArray@1000 : Codeunit 3000);
+    VAR
+      DotNetArray@1001 : DotNet "'mscorlib'.System.Array";
+    BEGIN
+      CharArray.GetArray(DotNetArray);
+      DotNetString := DotNetString.String(DotNetArray);
+    END;
+
+    [External]
+    PROCEDURE Set@6(Text@1000 : Text);
+    BEGIN
+      DotNetString := Text
+    END;
+
+    [External]
+    PROCEDURE Replace@2(ToReplace@1001 : Text;ReplacementText@1002 : Text) : Text;
+    BEGIN
+      EXIT(DotNetString.Replace(ToReplace,ReplacementText))
+    END;
+
+    [External]
+    PROCEDURE Split@5(DotNet_ArraySplit@1001 : Codeunit 3000;VAR DotNet_ArrayReturn@1000 : Codeunit 3000);
+    VAR
+      DotNetArraySplit@1002 : DotNet "'mscorlib'.System.Array";
+    BEGIN
+      DotNet_ArraySplit.GetArray(DotNetArraySplit);
+      DotNet_ArrayReturn.SetArray(DotNetString.Split(DotNetArraySplit));
+    END;
+
+    [External]
+    PROCEDURE ToCharArray@1(StartIndex@1001 : Integer;Length@1002 : Integer;VAR DotNet_Array@1000 : Codeunit 3000);
+    BEGIN
+      DotNet_Array.SetArray(DotNetString.ToCharArray(StartIndex,Length));
+    END;
+
+    [External]
+    PROCEDURE StartsWith@7(Value@1000 : Text) : Boolean;
+    BEGIN
+      EXIT(DotNetString.StartsWith(Value))
+    END;
+
+    [External]
+    PROCEDURE EndsWith@8(Value@1000 : Text) : Boolean;
+    BEGIN
+      EXIT(DotNetString.EndsWith(Value))
+    END;
+
+    [External]
+    PROCEDURE ToString@9() : Text;
+    BEGIN
+      EXIT(DotNetString.ToString);
+    END;
+
+    [External]
+    PROCEDURE IsDotNetNull@10() : Boolean;
+    BEGIN
+      EXIT(ISNULL(DotNetString));
+    END;
+
+    PROCEDURE GetString@3(VAR DotNetString2@1000 : DotNet "'mscorlib'.System.String");
+    BEGIN
+      DotNetString2 := DotNetString
+    END;
+
+    PROCEDURE SetString@4(DotNetString2@1000 : DotNet "'mscorlib'.System.String");
+    BEGIN
+      DotNetString := DotNetString2
+    END;
+
+    [External]
+    PROCEDURE PadRight@101(TotalWidth@1000 : Integer;PaddingChar@1001 : Char;VAR Result@1002 : Codeunit 3007);
+    BEGIN
+      Result.Set(DotNetString.PadRight(TotalWidth, PaddingChar));
+    END;
+
+    [External]
+    PROCEDURE PadLeft@107(TotalWidth@1000 : Integer;PaddingChar@1001 : Char;VAR Result@1002 : Codeunit 3007);
+    BEGIN
+      Result.Set(DotNetString.PadLeft(TotalWidth, PaddingChar));
+    END;
+
+    [External]
+    PROCEDURE Length@102() : Integer;
+    BEGIN
+      EXIT(DotNetString.Length);
+    END;
+
+    [External]
+    PROCEDURE IndexOfChar@103(Value@1000 : Char;StartIndex@1001 : Integer) : Integer;
+    BEGIN
+      EXIT(DotNetString.IndexOf(Value, StartIndex));
+    END;
+
+    [External]
+    PROCEDURE IndexOfString@106(Value@1000 : Text;StartIndex@1001 : Integer) : Integer;
+    BEGIN
+      EXIT(DotNetString.IndexOf(Value, StartIndex));
+    END;
+
+    [External]
+    PROCEDURE Substring@104(StartIndex@1000 : Integer;Length@1001 : Integer;VAR Result@1002 : Codeunit 3007);
+    BEGIN
+      Result.SetString(DotNetString.Substring(StartIndex, Length));
+    END;
+
+    [External]
+    PROCEDURE Trim@105(VAR Result@1000 : Codeunit 3007);
+    BEGIN
+      Result.SetString(DotNetString.Trim);
+    END;
+
+    [External]
+    PROCEDURE TrimStart@108(VAR TrimChars@1000 : Codeunit 3000;VAR Result@1001 : Codeunit 3007);
+    VAR
+      DotNetArray@1002 : DotNet "'mscorlib'.System.Array";
+    BEGIN
+      TrimChars.GetArray(DotNetArray);
+      Result.Set(DotNetString.TrimStart(DotNetArray));
+    END;
+
+    [External]
+    PROCEDURE TrimEnd@109(VAR TrimChars@1000 : Codeunit 3000;VAR Result@1001 : Codeunit 3007);
+    VAR
+      DotNetArray@1002 : DotNet "'mscorlib'.System.Array";
+    BEGIN
+      TrimChars.GetArray(DotNetArray);
+      Result.Set(DotNetString.TrimEnd(DotNetArray));
+    END;
+
+    BEGIN
+    END.
+  }
+}
+

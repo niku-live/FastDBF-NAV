@@ -1,0 +1,80 @@
+OBJECT Codeunit 50116 Lib_DbfColumnNameDictionary
+{
+  OBJECT-PROPERTIES
+  {
+    Date=;
+    Time=;
+    Version List=;
+  }
+  PROPERTIES
+  {
+    OnRun=BEGIN
+          END;
+
+  }
+  CODE
+  {
+    VAR
+      Dictionary@1000 : Codeunit 50202;
+
+    PROCEDURE Create@1(Count@1000 : Integer);
+    BEGIN
+      Dictionary.CreateDictionary;
+    END;
+
+    PROCEDURE Length@2() : Integer;
+    BEGIN
+      EXIT(Dictionary.Count);
+    END;
+
+    PROCEDURE Count@3() : Integer;
+    BEGIN
+      EXIT(Dictionary.Count);
+    END;
+
+    PROCEDURE Add@4(Key@1000 : Text;Value@1001 : Integer);
+    VAR
+      Object@1002 : Variant;
+    BEGIN
+      Object := Value;
+      Dictionary.Add(Key, Object);
+    END;
+
+    PROCEDURE TryGetValue@5(Key@1000 : Text;VAR Value@1001 : Integer) : Boolean;
+    VAR
+      Object@1002 : Variant;
+    BEGIN
+      IF NOT Dictionary.TryGetValue(Key, Object) THEN
+        EXIT(FALSE);
+      Value := Object;
+      EXIT(TRUE);
+    END;
+
+    PROCEDURE RemoveAt@6(Index@1000 : Integer);
+    BEGIN
+      Dictionary.RemoveAt(Index);
+    END;
+
+    PROCEDURE IsNull@7() : Boolean;
+    BEGIN
+      EXIT(Dictionary.IsNull);
+    END;
+
+    PROCEDURE ContainsKey@8(Key@1000 : Text) : Boolean;
+    BEGIN
+      EXIT(Dictionary.ContainsKey(Key));
+    END;
+
+    PROCEDURE Item@9(Key@1000 : Text) : Integer;
+    VAR
+      Object@1001 : Variant;
+    BEGIN
+      Dictionary.Item(Key, Object);
+      EXIT(Object);
+    END;
+
+    BEGIN
+    END.
+  }
+}
+

@@ -1,0 +1,216 @@
+OBJECT Codeunit 50201 Lib_LinkedList
+{
+  OBJECT-PROPERTIES
+  {
+    Date=;
+    Time=;
+    Version List=;
+  }
+  PROPERTIES
+  {
+    OnRun=BEGIN
+          END;
+
+  }
+  CODE
+  {
+    VAR
+      Head@1000 : Codeunit 50200;
+      Tail@1001 : Codeunit 50200;
+      NodeCount@1002 : Integer;
+      IsCreated@1003 : Boolean;
+
+    [External]
+    PROCEDURE CreateList@1();
+    BEGIN
+      CLEAR(Head);
+      CLEAR(Tail);
+      NodeCount := 0;
+      IsCreated := TRUE;
+    END;
+
+    [External]
+    PROCEDURE AddLast@2(VAR Value@1000 : Variant);
+    VAR
+      NewNode@1001 : Codeunit 50200;
+    BEGIN
+      NewNode.SetValue(Value);
+      NewNode.SetPrevious(Tail);
+      Tail := NewNode;
+      IF NodeCount = 0 THEN
+        Head := NewNode;
+      NodeCount += 1;
+    END;
+
+    [External]
+    PROCEDURE AddFirst@3(VAR Value@1000 : Variant);
+    VAR
+      NewNode@1001 : Codeunit 50200;
+    BEGIN
+      NewNode.SetValue(Value);
+      NewNode.SetNext(Head);
+      Head := NewNode;
+      IF NodeCount = 0 THEN
+        Tail := NewNode;
+      NodeCount += 1;
+    END;
+
+    [External]
+    PROCEDURE InsertAt@4(Index@1000 : Integer;VAR Value@1001 : Variant);
+    VAR
+      Node@1002 : Codeunit 50200;
+      NewNode@1003 : Codeunit 50200;
+      PrevNode@1004 : Codeunit 50200;
+    BEGIN
+      IF (Index = 0) OR (Count = 0) THEN
+        AddFirst(Value)
+      ELSE IF Index >= Count THEN
+        AddLast(Value)
+      ELSE
+        BEGIN
+          NodeAt(Index, Node);
+          Node.Previous(PrevNode);
+          NewNode.SetValue(Value);
+          NewNode.SetNext(Node);
+          Node.SetPrevious(NewNode);
+          NewNode.SetPrevious(PrevNode);
+          NodeCount += 1;
+        END;
+    END;
+
+    LOCAL PROCEDURE NodeAt@5(Index@1000 : Integer;VAR Node@1001 : Codeunit 50200);
+    VAR
+      CurIndex@1002 : Integer;
+    BEGIN
+      IF Index < 0 THEN
+        ERROR('Ar');
+
+      IF Index >= NodeCount THEN
+        ERROR('');
+
+      Node := Head;
+      FOR CurIndex := 0 TO Index - 1 DO
+        Node.Next(Node);
+    END;
+
+    [External]
+    PROCEDURE ValueAt@6(Index@1000 : Integer;VAR NodeValue@1001 : Variant);
+    VAR
+      Node@1002 : Codeunit 50200;
+    BEGIN
+      NodeAt(Index, Node);
+      Node.Value(NodeValue);
+    END;
+
+    [External]
+    PROCEDURE RemoveLast@7();
+    VAR
+      Node@1000 : Codeunit 50200;
+    BEGIN
+      IF NodeCount = 0 THEN
+        ERROR('');
+
+      IF NodeCount = 1 THEN
+        BEGIN
+          CreateList;
+          EXIT;
+        END;
+
+      IF NodeCount = 2 THEN
+        BEGIN
+          CLEAR(Tail);
+          Head.SetNext(Tail);
+          Tail := Head;
+          NodeCount := 1;
+          EXIT;
+        END;
+
+      Tail.Previous(Node);
+      CLEAR(Tail);
+      Node.SetNext(Tail);
+      Tail := Node;
+      NodeCount -= 1;
+    END;
+
+    [External]
+    PROCEDURE RemoveFirst@8();
+    VAR
+      Node@1000 : Codeunit 50200;
+    BEGIN
+      IF NodeCount = 0 THEN
+        ERROR('');
+
+      IF NodeCount = 1 THEN
+        BEGIN
+          CreateList;
+          EXIT;
+        END;
+
+      IF NodeCount = 2 THEN
+        BEGIN
+          CLEAR(Head);
+          Tail.SetPrevious(Head);
+          Head := Tail;
+          NodeCount := 1;
+          EXIT;
+        END;
+
+      Head.Next(Node);
+      CLEAR(Head);
+      Node.SetPrevious(Head);
+      Head := Node;
+      NodeCount -= 1;
+    END;
+
+    [External]
+    PROCEDURE RemoveAt@9(Index@1000 : Integer);
+    VAR
+      Node@1001 : Codeunit 50200;
+      NextNode@1002 : Codeunit 50200;
+      PrevNode@1003 : Codeunit 50200;
+    BEGIN
+      IF (Index = 0) OR (NodeCount < 2) THEN
+        RemoveFirst
+      ELSE IF (Index = NodeCount - 1) THEN
+        RemoveLast
+      ELSE
+        BEGIN
+          NodeAt(Index, Node);
+          Node.Previous(PrevNode);
+          Node.Next(NextNode);
+          CLEAR(Node);
+          NextNode.SetPrevious(PrevNode);
+          PrevNode.SetNext(NextNode);
+          NodeCount -= 1;
+        END;
+    END;
+
+    [External]
+    PROCEDURE Count@10() : Integer;
+    BEGIN
+      EXIT(NodeCount);
+    END;
+
+    [External]
+    PROCEDURE Dispose@11();
+    BEGIN
+      CLEARALL;
+    END;
+
+    [External]
+    PROCEDURE IsNull@12() : Boolean;
+    BEGIN
+      EXIT(NOT IsCreated);
+    END;
+
+    [External]
+    PROCEDURE GetEnumerator@13(VAR Enumerator@1000 : Codeunit 50203);
+    BEGIN
+      Enumerator.Init(Head);
+    END;
+
+    BEGIN
+    END.
+  }
+}
+

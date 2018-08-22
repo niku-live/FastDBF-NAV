@@ -1,0 +1,60 @@
+OBJECT Codeunit 50114 Lib_DbfColumnList
+{
+  OBJECT-PROPERTIES
+  {
+    Date=;
+    Time=;
+    Version List=;
+  }
+  PROPERTIES
+  {
+    OnRun=BEGIN
+          END;
+
+  }
+  CODE
+  {
+    VAR
+      List@1000 : Codeunit 50201;
+
+    PROCEDURE Create@1(FieldCount@1000 : Integer);
+    BEGIN
+      CLEAR(List);
+    END;
+
+    PROCEDURE Length@2() : Integer;
+    BEGIN
+      EXIT(List.Count);
+    END;
+
+    PROCEDURE Count@3() : Integer;
+    BEGIN
+      EXIT(List.Count);
+    END;
+
+    PROCEDURE Add@4(VAR DotNet_DbfColumn@1000 : Codeunit 50112);
+    VAR
+      Object@1001 : Variant;
+    BEGIN
+      Object := DotNet_DbfColumn;
+      List.AddLast(Object);
+    END;
+
+    PROCEDURE Get@5(Index@1000 : Integer;VAR DotNet_DbfColumn@1001 : Codeunit 50112);
+    VAR
+      Object@1002 : Variant;
+    BEGIN
+      List.ValueAt(Index, Object);
+      DotNet_DbfColumn := Object;
+    END;
+
+    PROCEDURE RemoveAt@6(Index@1000 : Integer);
+    BEGIN
+      List.RemoveAt(Index);
+    END;
+
+    BEGIN
+    END.
+  }
+}
+

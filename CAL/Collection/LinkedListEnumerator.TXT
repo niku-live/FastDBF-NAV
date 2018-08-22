@@ -1,0 +1,58 @@
+OBJECT Codeunit 50203 Lib_LinkedListEnumerator
+{
+  OBJECT-PROPERTIES
+  {
+    Date=;
+    Time=;
+    Version List=;
+  }
+  PROPERTIES
+  {
+    OnRun=BEGIN
+          END;
+
+  }
+  CODE
+  {
+    VAR
+      Head@1000 : Codeunit 50200;
+      Node@1001 : Codeunit 50200;
+      Started@1002 : Boolean;
+
+    [Internal]
+    PROCEDURE Init@1(VAR ListHead@1000 : Codeunit 50200);
+    BEGIN
+      Head := ListHead;
+      Reset;
+    END;
+
+    [External]
+    PROCEDURE Reset@2();
+    BEGIN
+      Started := FALSE;
+      Node := Head;
+    END;
+
+    [External]
+    PROCEDURE MoveNext@3() : Boolean;
+    BEGIN
+      IF NOT Started THEN
+        Node := Head
+      ELSE
+        Node.Next(Node);
+
+      Started := TRUE;
+      EXIT(NOT Node.IsNull);
+    END;
+
+    [External]
+    PROCEDURE Current@4(VAR Value@1000 : Variant);
+    BEGIN
+      Node.Value(Value);
+    END;
+
+    BEGIN
+    END.
+  }
+}
+

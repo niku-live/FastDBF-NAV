@@ -1,0 +1,125 @@
+OBJECT Codeunit 50202 Lib_Dictionary
+{
+  OBJECT-PROPERTIES
+  {
+    Date=;
+    Time=;
+    Version List=;
+  }
+  PROPERTIES
+  {
+    OnRun=BEGIN
+          END;
+
+  }
+  CODE
+  {
+    VAR
+      IsCreated@1000 : Boolean;
+      KeyList@1001 : Codeunit 50201;
+      ValueList@1002 : Codeunit 50201;
+
+    [External]
+    PROCEDURE CreateDictionary@1();
+    BEGIN
+      KeyList.CreateList;
+      ValueList.CreateList;
+    END;
+
+    [External]
+    PROCEDURE Count@2() : Integer;
+    BEGIN
+      EXIT(KeyList.Count);
+    END;
+
+    [External]
+    PROCEDURE Add@3(Key@1000 : Text;VAR Value@1001 : Variant);
+    VAR
+      KeyVariant@1002 : Variant;
+    BEGIN
+      IF ContainsKey(Key) THEN
+        ERROR('');
+
+      KeyVariant := Key;
+      KeyList.AddLast(KeyVariant);
+      ValueList.AddLast(Value);
+    END;
+
+    [External]
+    PROCEDURE TryGetValue@4(Key@1000 : Text;VAR Value@1001 : Variant) : Boolean;
+    BEGIN
+      IF NOT ContainsKey(Key) THEN
+        EXIT(FALSE);
+
+      Item(Key, Value);
+      EXIT(TRUE);
+    END;
+
+    [External]
+    PROCEDURE RemoveAt@5(Index@1000 : Integer);
+    BEGIN
+      KeyList.RemoveAt(Index);
+      ValueList.RemoveAt(Index);
+    END;
+
+    [External]
+    PROCEDURE IsNull@6() : Boolean;
+    BEGIN
+      EXIT(NOT IsCreated);
+    END;
+
+    [External]
+    PROCEDURE ContainsKey@7(Key@1000 : Text) : Boolean;
+    BEGIN
+      EXIT(KeyIndex(Key) >= 0);
+    END;
+
+    [External]
+    PROCEDURE Item@8(Key@1000 : Text;VAR Value@1001 : Variant);
+    VAR
+      Index@1002 : Integer;
+    BEGIN
+      Index := KeyIndex(Key);
+      IF Index < 0 THEN
+        ERROR('');
+
+      ValueList.ValueAt(Index, Value);
+    END;
+
+    [External]
+    PROCEDURE Keys@9(VAR List@1000 : Codeunit 50201);
+    BEGIN
+      List := KeyList;
+    END;
+
+    [External]
+    PROCEDURE Values@10(VAR List@1000 : Codeunit 50201);
+    BEGIN
+      List := ValueList;
+    END;
+
+    LOCAL PROCEDURE KeyIndex@11(Key@1000 : Text) : Integer;
+    VAR
+      Enumerator@1001 : Codeunit 50203;
+      Object@1002 : Variant;
+      CurrentKey@1003 : Text;
+      Index@1004 : Integer;
+    BEGIN
+      KeyList.GetEnumerator(Enumerator);
+      Index := 0;
+      WHILE Enumerator.MoveNext DO
+        BEGIN
+          Enumerator.Current(Object);
+          CurrentKey := Object;
+          IF CurrentKey = Key THEN
+            EXIT(Index);
+          Index += 1;
+        END;
+      EXIT(-1);
+    END;
+
+    BEGIN
+    END.
+  }
+}
+
