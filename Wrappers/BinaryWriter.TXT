@@ -117,7 +117,7 @@ OBJECT Codeunit 50121 DotNet_BinaryWriter
     [External]
     PROCEDURE WriteUInt32@12(Value@1000 : Integer);
     VAR
-      DotNetUInt32@1001 : DotNet "'mscorlib'.System.Byte";
+      DotNetUInt32@1001 : DotNet "'mscorlib'.System.UInt32";
       DotNetConvert@1002 : DotNet "'mscorlib'.System.Convert";
     BEGIN
       DotNetUInt32 := DotNetConvert.ChangeType(Value, GETDOTNETTYPE(DotNetUInt32));
@@ -137,10 +137,22 @@ OBJECT Codeunit 50121 DotNet_BinaryWriter
     PROCEDURE WriteChar@14(Value@1000 : Char);
     VAR
       DotNetChar@1001 : DotNet "'mscorlib'.System.Char";
-      DotNetConvert@1002 : DotNet "'mscorlib'.System.Convert";
+      DotNetString@1002 : DotNet "'mscorlib'.System.String";
+      DotNetObject@1003 : DotNet "'mscorlib'.System.Object";
+      DotNetType@1004 : DotNet "'mscorlib'.System.Type";
+      DotNetTypeArray@1005 : DotNet "'mscorlib'.System.Array";
+      DotNetParamArray@1006 : DotNet "'mscorlib'.System.Array";
     BEGIN
-      DotNetChar := DotNetConvert.ChangeType(Value, GETDOTNETTYPE(DotNetChar));
-      InvokeWrite(DotNetChar);
+      //For System.Char we cannot call InvokeWrite helper method
+      //because NAV converts System.Char to System.String on variable passing.
+      //To avoid this we need to call Array.SetValue(DotNetString.Chars(0), 0) directly
+      DotNetString := FORMAT(Value);
+      DotNetTypeArray := DotNetTypeArray.CreateInstance(GETDOTNETTYPE(DotNetType), 1);
+      DotNetTypeArray.SetValue(GETDOTNETTYPE(DotNetChar), 0);
+      DotNetParamArray := DotNetParamArray.CreateInstance(GETDOTNETTYPE(DotNetObject), 1);
+      DotNetParamArray.SetValue(DotNetString.Chars(0), 0);
+      DotNetType := DotNetBinaryWriter.GetType;
+      DotNetType.GetMethod('Write', DotNetTypeArray).Invoke(DotNetBinaryWriter, DotNetParamArray);
     END;
 
     [External]
@@ -149,18 +161,50 @@ OBJECT Codeunit 50121 DotNet_BinaryWriter
       Stream.SetStream(DotNetBinaryWriter.BaseStream);
     END;
 
-    LOCAL PROCEDURE InvokeWrite@16(VAR Object@1000 : DotNet "'mscorlib'.System.Object");
+    LOCAL PROCEDURE InvokeWrite@16(Object@1000 : DotNet "'mscorlib'.System.Object");
     VAR
       DotNetType@1001 : DotNet "'mscorlib'.System.Type";
       DotNetTypeArray@1002 : DotNet "'mscorlib'.System.Array";
       DotNetParamArray@1003 : DotNet "'mscorlib'.System.Array";
+      DotNetObject@1004 : DotNet "'mscorlib'.System.Object";
     BEGIN
+      //Sadly but we cannot call DotNetBinaryWriter.Write(Object) directly
+      //we get 'The function call was ambiguous'. To avoid it we need to fallback to generics
       DotNetTypeArray := DotNetTypeArray.CreateInstance(GETDOTNETTYPE(DotNetType), 1);
       DotNetTypeArray.SetValue(Object.GetType, 0);
-      DotNetParamArray := DotNetParamArray.CreateInstance(GETDOTNETTYPE(Object), 1);
+      DotNetParamArray := DotNetParamArray.CreateInstance(GETDOTNETTYPE(DotNetObject), 1);
       DotNetParamArray.SetValue(Object, 0);
       DotNetType := DotNetBinaryWriter.GetType;
       DotNetType.GetMethod('Write', DotNetTypeArray).Invoke(DotNetBinaryWriter, DotNetParamArray);
+    END;
+
+    [External]
+    PROCEDURE WriteString@17(Value@1000 : Text);
+    VAR
+      DotNetString@1001 : DotNet "'mscorlib'.System.String";
+    BEGIN
+      DotNetString := Value;
+      InvokeWrite(DotNetString);
+    END;
+
+    [External]
+    PROCEDURE WriteBoolean@18(Value@1000 : Boolean);
+    VAR
+      DotNetBoolean@1001 : DotNet "'mscorlib'.System.Boolean";
+      DotNetConvert@1002 : DotNet "'mscorlib'.System.Convert";
+    BEGIN
+      DotNetBoolean := DotNetConvert.ChangeType(Value, GETDOTNETTYPE(DotNetBoolean));
+      InvokeWrite(DotNetBoolean);
+    END;
+
+    [External]
+    PROCEDURE WriteDecimal@19(Value@1000 : Decimal);
+    VAR
+      DotNetDecimal@1001 : DotNet "'mscorlib'.System.Decimal";
+      DotNetConvert@1002 : DotNet "'mscorlib'.System.Convert";
+    BEGIN
+      DotNetDecimal := DotNetConvert.ChangeType(Value, GETDOTNETTYPE(DotNetDecimal));
+      InvokeWrite(DotNetDecimal);
     END;
 
     BEGIN

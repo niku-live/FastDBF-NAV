@@ -103,6 +103,30 @@ OBJECT Codeunit 50120 DotNet_BinaryReader
       Result.SetStream(DotNetBinaryReader.BaseStream);
     END;
 
+    [External]
+    PROCEDURE ReadChar@14() : Char;
+    BEGIN
+      EXIT(DotNetBinaryReader.ReadChar());
+    END;
+
+    [External]
+    PROCEDURE ReadString@15() : Text;
+    BEGIN
+      EXIT(DotNetBinaryReader.ReadString());
+    END;
+
+    [External]
+    PROCEDURE ReadBoolean@16() : Boolean;
+    BEGIN
+      EXIT(DotNetBinaryReader.ReadBoolean());
+    END;
+
+    [External]
+    PROCEDURE ReadDecimal@17() : Decimal;
+    BEGIN
+      EXIT(DotNetBinaryReader.ReadDecimal());
+    END;
+
     BEGIN
     END.
   }
