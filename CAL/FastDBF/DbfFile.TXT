@@ -17,7 +17,7 @@ OBJECT Codeunit 50110 Lib_DbfFile
     VAR
       _header@1000 : Codeunit 50111;
       _headerWritten@1001 : Boolean;
-      _dbfFile@1002 : Codeunit 50122;
+      _dbfFile@1002 : Codeunit 3034;
       _dbfFileReader@1003 : Codeunit 50120;
       _dbfFileWriter@1004 : Codeunit 50121;
       _encoding@1005 : Codeunit 3026;
@@ -82,7 +82,7 @@ OBJECT Codeunit 50110 Lib_DbfFile
     END;
 
     [External]
-    PROCEDURE Open@3(VAR ofs@1000 : Codeunit 50122);
+    PROCEDURE Open@3(VAR ofs@1000 : Codeunit 3034);
     BEGIN
       /// <summary>
       /// Open a DBF from a FileStream. This can be a file or an internet connection stream. Make sure that it is positioned at start of DBF file.
@@ -332,7 +332,7 @@ OBJECT Codeunit 50110 Lib_DbfFile
     PROCEDURE Write@15(VAR orec@1000 : Codeunit 50113;bClearRecordAfterWrite@1001 : Boolean);
     VAR
       nNumRecords@1002 : Integer;
-      _dbfFileWriterBaseStream@1003 : Codeunit 50122;
+      _dbfFileWriterBaseStream@1003 : Codeunit 3034;
     BEGIN
       /// <summary>
       /// Write a record to file. If RecordIndex is present, record will be updated, otherwise a new record will be written.
@@ -432,7 +432,7 @@ OBJECT Codeunit 50110 Lib_DbfFile
     [External]
     PROCEDURE WriteHeader@17() : Boolean;
     VAR
-      _dbfFileWriterBaseStream@1000 : Codeunit 50122;
+      _dbfFileWriterBaseStream@1000 : Codeunit 3034;
     BEGIN
       /// <summary>
       /// Save header to file. Normally, you do not have to call this method, header is saved

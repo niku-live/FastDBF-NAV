@@ -655,7 +655,7 @@ OBJECT Codeunit 50113 Lib_DbfRecord
     END;
 
     [Internal]
-    PROCEDURE Write@26(VAR obw@1000 : Codeunit 50122;bClearRecordAfterWrite@1001 : Boolean);
+    PROCEDURE Write@26(VAR obw@1000 : Codeunit 3034;bClearRecordAfterWrite@1001 : Boolean);
     BEGIN
       /// <summary>
       /// Writes data to stream. Make sure stream is positioned correctly because we simply write out data to it, and clear the record.
@@ -668,7 +668,7 @@ OBJECT Codeunit 50113 Lib_DbfRecord
     END;
 
     [Internal]
-    PROCEDURE Read@27(VAR obr@1000 : Codeunit 50122) : Boolean;
+    PROCEDURE Read@27(VAR obr@1000 : Codeunit 3034) : Boolean;
     BEGIN
       /// <summary>
       /// Read record from stream. Returns true if record read completely, otherwise returns false.
@@ -680,7 +680,7 @@ OBJECT Codeunit 50113 Lib_DbfRecord
     END;
 
     [Internal]
-    PROCEDURE ReadValue@28(VAR obr@1000 : Codeunit 50122;colIndex@1001 : Integer) : Text;
+    PROCEDURE ReadValue@28(VAR obr@1000 : Codeunit 3034;colIndex@1001 : Integer) : Text;
     VAR
       ocol@1002 : Codeunit 50112;
       string@1003 : Codeunit 3007;

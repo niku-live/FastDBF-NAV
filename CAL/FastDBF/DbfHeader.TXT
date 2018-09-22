@@ -490,7 +490,7 @@ OBJECT Codeunit 50111 Lib_DbfHeader
       nDecimals@1015 : Integer;
       dbfColumn@1016 : Codeunit 50112;
       nExtraReadBytes@1017 : Integer;
-      readerBaseStream@1018 : Codeunit 50122;
+      readerBaseStream@1018 : Codeunit 3034;
     BEGIN
       /// <summary>
       /// Read header data, make sure the stream is positioned at the start of the file to read the header otherwise you will get an exception.

@@ -1,4 +1,4 @@
-OBJECT Codeunit 50122 DotNet_Stream
+OBJECT Codeunit 3034 DotNet_Stream
 {
   OBJECT-PROPERTIES
   {
